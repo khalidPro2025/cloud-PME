@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  app:
+    build: ./app
+    container_name: fastapi_app
+    networks:
+      - cloud_net
+
+  db:
+    image: postgres:15
+    container_name: pme_db
+    environment:
+      POSTGRES_DB: pmedb
+      POSTGRES_USER: pmeuser
+      POSTGRES_PASSWORD: pmepass
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - cloud_net
+
+  nginx:
+    build: ./nginx
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+    networks:
+      - cloud_net
+
+networks:
+  cloud_net:
+
+volumes:
+  db_data:
+

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pme-db
+  template:
+    metadata:
+      labels:
+        app: pme-db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15
+        env:
+        - name: POSTGRES_DB
+          value: pmedb
+        - name: POSTGRES_USER
+          value: pmeuser
+        - name: POSTGRES_PASSWORD
+          value: pmepass
+        ports:
+        - containerPort: 5432
