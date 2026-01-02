@@ -4,6 +4,7 @@ services:
   app:
     build: ./app
     container_name: fastapi_app
+    restart: unless-stopped
     networks:
       - cloud_net
 
@@ -16,6 +17,7 @@ services:
       POSTGRES_PASSWORD: pmepass
     volumes:
       - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
     networks:
       - cloud_net
 
@@ -24,8 +26,23 @@ services:
     container_name: nginx_proxy
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - certbot-etc:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
     depends_on:
       - app
+    restart: unless-stopped
+    networks:
+      - cloud_net
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-www:/var/www/certbot
     networks:
       - cloud_net
 
@@ -34,4 +51,5 @@ networks:
 
 volumes:
   db_data:
-
+  certbot-etc:
+  certbot-www:

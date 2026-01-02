@@ -14,6 +14,7 @@ spec:
     spec:
       containers:
       - name: fastapi
-        image: khalid/fastapi-pme:latest
+        image: fastapi-pme:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 8000
